@@ -8,10 +8,13 @@ const morgan = require("morgan"); // request logging
 const mongoose = require("mongoose"); // database connection
 
 const metaDataModel = require("./db/metaDataModal");
-
 app.use(
   cors({
-    origin: "https://slf-git-main-jatinchopras-projects.vercel.app/",
+    origin: [
+      "https://slf-git-main-jatinchopras-projects.vercel.app",
+      "https://slf-phi.vercel.app",
+    ],
+    credentials: true, // If you need to send cookies or auth headers
   })
 );
 
@@ -61,7 +64,10 @@ app.get("/play/:songId", async (req, res) => {
 
   console.log(req.headers.referer);
   // Check referer
-  if (!req.headers.referer || !req.headers.referer.includes("slf-phi.vercel.app")) {
+  if (
+    !req.headers.referer ||
+    !req.headers.referer.includes("slf-phi.vercel.app")
+  ) {
     return res.status(403).send("Unauthorized");
   }
   try {
