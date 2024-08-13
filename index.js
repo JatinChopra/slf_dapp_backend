@@ -61,7 +61,7 @@ app.get("/play/:songId", async (req, res) => {
 
   console.log(req.headers.referer);
   // Check referer
-  if (!req.headers.referer || !req.headers.referer.includes("localhost:3000")) {
+  if (!req.headers.referer || !req.headers.referer.includes("slf-phi.vercel.app")) {
     return res.status(403).send("Unauthorized");
   }
   try {
