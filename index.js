@@ -11,7 +11,7 @@ const metaDataModel = require("./db/metaDataModal");
 
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: "https://slf-git-main-jatinchopras-projects.vercel.app/",
   })
 );
 
@@ -79,6 +79,7 @@ app.get("/play/:songId", async (req, res) => {
     } else {
       res.status(200);
     }
+    // Set headers to prevent caching
     res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
     res.setHeader("Pragma", "no-cache");
     res.setHeader("Expires", "0");
