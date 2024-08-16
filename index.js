@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const PORT = 80;
+const PORT = 3001;
 
 const axios = require("axios");
 const cors = require("cors");
@@ -8,6 +8,9 @@ const morgan = require("morgan"); // request logging
 const mongoose = require("mongoose"); // database connection
 
 const metaDataModel = require("./db/metaDataModal");
+const commentModel = require("./db/commentModal");
+{
+  /*
 app.use(
   cors({
     origin: [
@@ -17,6 +20,9 @@ app.use(
     credentials: true, // If you need to send cookies or auth headers
   })
 );
+*/
+}
+app.use(cors({ origin: "http://localhost:3000" }));
 
 require("dotenv").config();
 
@@ -56,6 +62,41 @@ async function getSongMetadata(songId) {
   return await metaDataModel.findById(songId);
 }
 
+// {
+//   userId: 'jatinchopra2053@gmail.com',
+//   text: 'what',
+//   img: 'https://avatars.githubusercontent.com/u/67048953?v=4',
+//   username: 'JatinChopra',
+//   songId: '66bbf16d899a67709f2f0baf',
+//   timestamp: 26.753973
+// }
+
+app.post("/comment/add", async (req, res) => {
+  console.log(req.body);
+  try {
+    let newComment = await commentModel(req.body);
+    let result = await newComment.save();
+    console.log("Returning ");
+    console.log(result);
+    return res.status(200).json(result);
+  } catch (e) {
+    console.log("Error while adding a new comment");
+    return res.status(403).json({ message: "Error" });
+  }
+});
+
+app.get("/comment/:songId", async (req, res) => {
+  console.log("Received a request for fetching comments ");
+
+  let comments = await commentModel.find({ songId: req.params.songId });
+  if (!comments)
+    return res.status(404).json({ message: "Comments not found " });
+  console.log("returning the stuff below");
+  console.log(comments);
+  console.log(comments.length);
+  return res.status(200).json(comments);
+});
+
 app.get("/play/:songId", async (req, res) => {
   const songId = req.params.songId;
   const metadata = await getSongMetadata(songId);
@@ -64,10 +105,8 @@ app.get("/play/:songId", async (req, res) => {
 
   console.log(req.headers.referer);
   // Check referer
-  if (
-    !req.headers.referer ||
-    !req.headers.referer.includes("slf-phi.vercel.app")
-  ) {
+  //  !req.headers.referer.includes("slf-phi.vercel.app")
+  if (!req.headers.referer || !req.headers.referer.includes("localhost:3000")) {
     return res.status(403).send("Unauthorized");
   }
   try {
