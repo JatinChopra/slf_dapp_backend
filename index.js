@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const PORT = 3001;
+const PORT = 80;
 
 const axios = require("axios");
 const cors = require("cors");
@@ -9,8 +9,6 @@ const mongoose = require("mongoose"); // database connection
 
 const metaDataModel = require("./db/metaDataModal");
 const commentModel = require("./db/commentModal");
-{
-  /*
 app.use(
   cors({
     origin: [
@@ -20,9 +18,7 @@ app.use(
     credentials: true, // If you need to send cookies or auth headers
   })
 );
-*/
-}
-app.use(cors({ origin: "http://localhost:3000" }));
+//app.use(cors({ origin: "http://localhost:3000" }));
 
 require("dotenv").config();
 
@@ -105,8 +101,8 @@ app.get("/play/:songId", async (req, res) => {
 
   console.log(req.headers.referer);
   // Check referer
-  //  !req.headers.referer.includes("slf-phi.vercel.app")
-  if (!req.headers.referer || !req.headers.referer.includes("localhost:3000")) {
+  if (!req.headers.referer.includes("slf-phi.vercel.app")) {
+    //if (!req.headers.referer || !req.headers.referer.includes("localhost:3000")) {
     return res.status(403).send("Unauthorized");
   }
   try {
